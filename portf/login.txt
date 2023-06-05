@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #000000;
+    }
+
+
+    .login-form {
+      width: 300px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .login-form h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+      width: 95%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    .login-form input[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .login-form input[type="submit"]:hover {
+      background-color: #555;
+    }
+
+    .login-form .error-message {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-form">
+    <h2>Login</h2>
+    <form>
+      <input type="text" id="username" placeholder="Usuário" required>
+      <input type="password" id="password" placeholder="Senha" required>
+      <input type="submit" value="Entrar" onclick="login(event)">
+    </form>
+    <p class="error-message">Credenciais incorretas. Por favor, tente novamente.</p>
+  </div>
+
+  <script>
+    function login(event) {
+      event.preventDefault(); 
+      var username = document.getElementById("username").value;
+      var password = document.getElementById("password").value;
+      var errorMessage = document.querySelector(".error-message");
+
+
+      if (username === "admin" && password === "senha123") {
+  
+        localStorage.setItem("username", username);
+        localStorage.setItem("role", "editor");
+        window.open("editor.html");
+      } else if (username === "user" && password === "123") {
+        localStorage.setItem("username", username);
+        localStorage.setItem("role", "editor");
+        window.open("leitor.html");
+      } else {
+ 
+        errorMessage.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>

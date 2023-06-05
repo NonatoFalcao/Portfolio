@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página do editor</title>
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #362e2e;
+    }
+
+    .add-project-form {
+      width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .add-project-form h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .add-project-form input[type="text"],
+    .add-project-form input[type="url"],
+    .add-project-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    .add-project-form input[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .add-project-form input[type="submit"]:hover {
+      background-color: #555;
+    }
+    .add-project-form textarea {
+      width: 80%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    .project {
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .project img {
+      width: 100%;
+      height: auto;
+      border-radius: 3px;
+    }
+
+    .project h3 {
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    .project p {
+      margin: 0;
+    }
+
+    .project .delete-project {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: #f44336;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .project {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #fff;
+       border-radius: 5px;
+       box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+     .project img {
+      width: 100%;
+      height: auto;
+       border-radius: 3px;
+      margin-bottom: 10px;
+    }
+
+    .project h3 {
+      margin: 0;
+       font-size: 18px;
+     }
+
+      .project p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+    .add-project-form .description-input {
+       width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+         border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="add-project-form">
+    <h2>Adicionar/Excluir <br>Projeto</h2>
+    <form id="projectForm">
+      <input type="text" id="title" placeholder="Título" required>
+      <input type="text" id="description" class="description-input" placeholder="Descrição" required>
+      <input type="text" id="imageUrl" placeholder="URL da Imagem" required>
+      <input type="text" id="projectLink" placeholder="Link do Projeto (opcional)">
+      <button type="submit">Adicionar Projeto</button>
+    </form>
+  </div>
+  
+
+  <div id="gallery"></div>
+
+  <script>
+
+    function deleteProject(event) {
+      event.preventDefault();
+
+
+      var projectElement = this.parentNode;
+
+      projectElement.parentNode.removeChild(projectElement);
+
+
+      updateProjectsInLocalStorage();
+    }
+
+
+    function updateProjectsInLocalStorage() {
+      var projectElements = document.getElementsByClassName("project");
+      var projects = [];
+
+      for (var i = 0; i < projectElements.length; i++) {
+        var project = {
+          imageUrl: projectElements[i].querySelector("img").src,
+          title: projectElements[i].querySelector("h3").textContent,
+          description: projectElements[i].querySelector("p").textContent
+        };
+
+        projects.push(project);
+      }
+
+      localStorage.setItem("projects", JSON.stringify(projects));
+    }
+
+    document.getElementById("projectForm").addEventListener("submit", function(event) {
+      event.preventDefault(); 
+
+
+      var title = document.getElementById("title").value;
+      var description = document.getElementById("description").value;
+      var imageUrl = document.getElementById("imageUrl").value;
+      var projectLink = document.getElementById("projectLink").value;
+
+
+      var projectElement = document.createElement("div");
+      projectElement.classList.add("project");
+
+      var imgElement = document.createElement("img");
+      imgElement.src = imageUrl;
+      imgElement.alt = title;
+
+      var h3Element = document.createElement("h3");
+      h3Element.textContent = title;
+
+      var pElement = document.createElement("p");
+      pElement.textContent = description;
+
+      var deleteButton = document.createElement("button");
+      deleteButton.classList.add("delete-project");
+      deleteButton.textContent = "Excluir Projeto";
+      deleteButton.addEventListener("click", deleteProject);
+
+
+      projectElement.appendChild(imgElement);
+      projectElement.appendChild(h3Element);
+      projectElement.appendChild(pElement);
+      projectElement.appendChild(deleteButton);
+
+
+      var galleryElement = document.getElementById("gallery");
+      galleryElement.appendChild(projectElement);
+
+
+      document.getElementById("title").value = "";
+      document.getElementById("description").value = "";
+      document.getElementById("imageUrl").value = "";
+      document.getElementById("projectLink").value = "";
+
+
+      addDeleteButtonEventListeners();
+      
+
+      updateProjectsInLocalStorage();
+    });
+
+    function addDeleteButtonEventListeners() {
+      var deleteButtons = document.getElementsByClassName("delete-project");
+      for (var i = 0; i < deleteButtons.length; i++) {
+        deleteButtons[i].addEventListener("click", deleteProject);
+      }
+    }
+
+
+    var projects = JSON.parse(localStorage.getItem("projects")) || [];
+
+
+    var gallery = document.getElementById("gallery");
+
+    projects.forEach(function(project) {
+      var projectElement = document.createElement("div");
+      projectElement.classList.add("project");
+
+      var imgElement = document.createElement("img");
+      imgElement.src = project.imageUrl;
+      imgElement.alt = project.title;
+
+      var h3Element = document.createElement("h3");
+      h3Element.textContent = project.title;
+
+      var pElement = document.createElement("p");
+      pElement.textContent = project.description;
+
+      var deleteButton = document.createElement("button");
+      deleteButton.classList.add("delete-project");
+      deleteButton.textContent = "Excluir Projeto";
+      deleteButton.addEventListener("click", deleteProject);
+
+      projectElement.appendChild(imgElement);
+      projectElement.appendChild(h3Element);
+      projectElement.appendChild(pElement);
+      projectElement.appendChild(deleteButton);
+
+      gallery.appendChild(projectElement);
+    });
+
+
+    addDeleteButtonEventListeners();
+  </script>
+</body>
+</html>
